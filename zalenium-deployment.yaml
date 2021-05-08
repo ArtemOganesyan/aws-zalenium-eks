@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zalenium
+spec:
+  selector:
+    matchLabels:
+      app: zalenium
+  template:
+    metadata:
+      labels:
+        app: zalenium
+        role: grid
+    spec:
+      containers:
+      - name: zalenium
+        image: dosel/zalenium
+        args:
+            - start
+            - '--desiredContainers'
+            - '2'
+            - '--maxTestSessions'
+            - '1'
+            - '--screenWidth'
+            - '1440'
+            - '--screenHeight'
+            - '810'
+            - '--videoRecordingEnabled'
+            - 'true'
+        env:
+            - name: OVERRIDE_WAIT_TIME
+              value: 5m
+        ports:
+        - containerPort: 4444
+        livenessProbe:
+                  httpGet:
+                    path: /
+                    port: 4444
+                  initialDelaySeconds: 30
+                  timeoutSeconds: 1
